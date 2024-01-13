@@ -37,6 +37,7 @@ $(function(){
                     try {
                         const response = await fetch(weatherQueryUrl);
                         const data = await response.json();
+                        console.log(data);
     
                         // create new html elements and add content from fetched data
                         let cityHeader = $('<h4>').text(`${properCaseCityName} (${todayDt})`);
@@ -46,7 +47,7 @@ $(function(){
                         let todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
                         
                         // add new elements with today's weather
-                        $('#today').append(cityHeader, todayTemp, feelsLike, todayWind, windGust, todayHumidity);
+                        $('#today').append(cityHeader, todayTemp, feelsLike, todayWind, todayHumidity);
                         
                         // add search city to history
                         const lastCity = $('<button>').text(properCaseCityName);
@@ -77,12 +78,15 @@ $(function(){
                                         // rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
                                         let futureDataFormatted = futureDate.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
                                         // create new card with forecast weather and display
-                                        let cardDate = $('<h6>').text(futureDataFormatted);
+                                        let cardDate = $('<h5>').text(futureDataFormatted);
+                                        let iconCode = dateArr[i].weather[0].icon;
+                                        let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                                        let cardIcon = $('<img>').attr({src: iconSource, width: "50px", height: "auto"});
                                         let cardTemp = $('<p>').text(`Temp: ${Math.round(dateArr[i].main.temp)}°C`);
                                         let cardWind = $('<p>').text(`Wind: ${Math.round(dateArr[i].wind.speed)} m/s`);
                                         let cardHumidity = $('<p>').text(`Humidity: ${dateArr[i].main.humidity}%`);
                                         let newCard = $('<div>').addClass('card');
-                                        newCard.append(cardDate, cardTemp, cardWind, cardHumidity);
+                                        newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
                                         $('#forecast').append(newCard);
                                     }
                                 }
