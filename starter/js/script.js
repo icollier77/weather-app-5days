@@ -21,12 +21,17 @@ $(function(){
             })
             .then(function (data) {
             console.log(data)
-            // extract today's weather and display
+            // extract today's weather
             let cityHeader = $('<h4>').text(`${cityName} (${todayDt})`);
             let todayTemp = $('<p>').text(`${Math.round(data.list[0].main.temp)}°C`);
             let todayWind = $('<p>').text(`${Math.round(data.list[0].wind.speed)} m/s`);
             let todayHumidity = $('<p>').text(`${data.list[0].main.humidity}%`);
+            // clear today's display and add today weather
+            $('#today').empty();
             $('#today').append(cityHeader, todayTemp, todayWind, todayHumidity);
+            // add search city to history
+            const lastCity = $('<button>').text(cityName);
+            $('#history').append(lastCity);
 
             })
 
