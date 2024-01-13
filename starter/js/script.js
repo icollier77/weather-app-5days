@@ -32,8 +32,6 @@ $(function(){
                 // fetch weather data
                 const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${apiKey}&units=metric`;
                 getWeatherData();
-                
-
                 // function to get weather data
                 async function getWeatherData() {
                     try {
@@ -92,12 +90,14 @@ $(function(){
                                 console.log("Error:", error);
                             }
                         } catch(err) {
-                            console.log("ERROR!", err);
+                            alert("Issues with obtaining weather data!")
+                            console.log("ERROR with WEATHER data!", err);
                         }
                 }
 
             } catch(err) {
-                console.log("ERROR WITH GEO DATA:", err);
+                alert("Please enter a valid location!");
+                console.log("ERROR with GEO data:", err);
             }
         }            
     })
