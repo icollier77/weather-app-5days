@@ -40,12 +40,13 @@ $(function(){
     
                         // create new html elements and add content from fetched data
                         let cityHeader = $('<h4>').text(`${properCaseCityName} (${todayDt})`);
-                        let todayTemp = $('<p>').text(`${Math.round(data.list[0].main.temp)}°C`);
-                        let todayWind = $('<p>').text(`${Math.round(data.list[0].wind.speed)} m/s`);
-                        let todayHumidity = $('<p>').text(`${data.list[0].main.humidity}%`);
+                        let todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
+                        let feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
+                        let todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
+                        let todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
                         
                         // add new elements with today's weather
-                        $('#today').append(cityHeader, todayTemp, todayWind, todayHumidity);
+                        $('#today').append(cityHeader, todayTemp, feelsLike, todayWind, windGust, todayHumidity);
                         
                         // add search city to history
                         const lastCity = $('<button>').text(properCaseCityName);
