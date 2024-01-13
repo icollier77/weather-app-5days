@@ -1,14 +1,39 @@
 $(function(){
-        
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
-    
+    const todayDt = dayjs().format('DD/M/YYYY');
     // add click listener on button
     $("#search-button").click(function(event) {
-        event.preventDefault;
+        event.preventDefault();
         // 1 extract city from the input field
-        let cityName = $('#search-input').val().trim();
-        console.log(cityName);
+        const cityName = $('#search-input').val().trim();
+        // get city's latitude and longitude
+        const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=${apiKey}`;
+        fetch(geoQueryUrl)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            // fetch weather data
+            const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&units=metric&appid=${apiKey}`;
+            fetch(weatherQueryUrl)
+            .then(function (response) {
+            return response.json()
+            })
+            .then(function (data) {
+            console.log(data)
+            // extract today's weather and display
+            let cityHeader = $('<h4>').text(`${cityName} (${todayDt})`);
+            let todayTemp = $('<p>').text(`${Math.round(data.list[0].main.temp)}°C`);
+            let todayWind = $('<p>').text(`${Math.round(data.list[0].wind.speed)} m/s`);
+            let todayHumidity = $('<p>').text(`${data.list[0].main.humidity}%`);
+            $('#today').append(cityHeader, todayTemp, todayWind, todayHumidity);
+
+            })
+
+        })
     })
+
+
 })
 
 
@@ -19,11 +44,8 @@ $(function(){
 
     
     
-    // 2 send fetch request to geo API and obtain city's lat and lon, save those variables
-    // const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=City&appid=${apiKey}`;
-
-    // 3 update url for forecast and fetch forecast data
-    // const baseUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    
+    
     
     // fetch request from OpenWeather API
     // fetch(apiUrl)
@@ -45,4 +67,3 @@ $(function(){
 
     // 7 add a listener to the buttons to run fetch request and update 
     // })
-// })
