@@ -11,11 +11,11 @@ $(function(){
         // extract city from the input field
         const cityName = $('#search-input').val().trim();
         // make sure city name is in Proper Case
+        // code from option 4 in https://www.smartherd.com/convert-text-cases-using-jquery-without-css/
         const properCaseCityName = cityName.toLowerCase().replace(/\b[a-z]/g, function(txtVal) {
             return txtVal.toUpperCase();
         });
         // get city's latitude and longitude
-        // code from option 4 in https://www.smartherd.com/convert-text-cases-using-jquery-without-css/
         const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=${apiKey}`;
         fetch(geoQueryUrl)
         .then(function (response) {
