@@ -35,13 +35,15 @@ async function getWeather(location, key) {
     // clear the input field
     $('#search-input').val('');
     try {
-        // 1. Fetch geo data
+        // Fetch geo data
         const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(geoQueryUrl);
         const data = await res.json();
-        // 2. Add city to search history (button)
+        // Add city to search history (button)
         addCityBtn(location);
-        // 3. Fetch weather data
+        // Add to local storage
+        addToLocalStorage(location);
+        // Fetch weather data
         const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(weatherQueryUrl, location);
     } catch (err) {
@@ -56,8 +58,14 @@ function addCityBtn(location) {
     $('#history').append(lastCity);
 }
 
+// ----- FUNCTION TO ADD TO LOCAL STORAGE --------
+function addToLocalStorage(location) {
+    let cityList = JSON.parse(localStorage.getItem('savedList')) || []; // extract items array from local storage or create it
+    cityList.push(location); // add city to the array
+    localStorage.setItem('savedList', JSON.stringify(cityList)); // convert to json and add to local storage
+}
 // ------- FUNCTION TO GET WEATHER DATA AND DISPLAY ----------
-async function getWeatherData(url, name) {
+async function getWeatherData(url, location) {
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -66,7 +74,7 @@ async function getWeatherData(url, name) {
         const currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
         const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
         const todayDt = dayjs().format('DD/M/YYYY');
-        const cityHeader = $('<h4>').text(`${name} (${todayDt})`);
+        const cityHeader = $('<h4>').text(`${location} (${todayDt})`);
         const todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
         const feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
         const todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
