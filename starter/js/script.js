@@ -62,7 +62,7 @@ async function getWeather(location, key) {
         const weatherQueryUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(weatherQueryUrl, location);
     } catch (err) {
-        alert("Invalid location!");
+        alert("Issues with API request, or invalid location!");
         console.log("ERROR with GEO data:", err);
     }
 }
