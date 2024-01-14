@@ -11,6 +11,7 @@ $(function () {
         clearPrevious(); // clear previous data
         const cityName = getProperName($('#search-input'));  // extract city from the input field & format
         if (cityName == "") {       // make sure the search field is not empty
+            // TODO: change to a modal
             alert("Please add a location!");
             return;
         } else {
@@ -51,7 +52,7 @@ async function getWeather(location, key) {
     $('#search-input').val('');
     try {
         // Fetch geo data
-        const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
+        const geoQueryUrl = `https:api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(geoQueryUrl);
         const data = await res.json();
         // Add city to search history (button)
@@ -59,9 +60,10 @@ async function getWeather(location, key) {
         // Add to local storage
         addToLocalStorage(location);
         // Fetch weather data
-        const weatherQueryUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
+        const weatherQueryUrl = `https:api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(weatherQueryUrl, location);
     } catch (err) {
+        // TODO: change to a modal
         alert("Issues with API request, or invalid location!");
         console.log("ERROR with GEO data:", err);
     }
@@ -86,7 +88,7 @@ async function getWeatherData(url, location) {
         const data = await response.json();
         // ---- Create new html elements and add today weather from fetched data ----
         const currentIconCode = data.list[0].weather[0].icon;
-        const currentIconSource = `http://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
+        const currentIconSource = `https:openweathermap.org/img/wn/${currentIconCode}@2x.png`;
         const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
         const todayDt = dayjs().format('DD/M/YYYY');
         // ! why can't add icon in the header?
@@ -115,7 +117,7 @@ async function getWeatherData(url, location) {
                 // create new card with forecast weather and display
                 let cardDate = $('<h5>').text(futureDate);
                 let iconCode = noonArray[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
-                let iconSource = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                let iconSource = `https:openweathermap.org/img/wn/${iconCode}@2x.png`;
                 let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
                 let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
@@ -129,6 +131,7 @@ async function getWeatherData(url, location) {
             }
         })
     } catch (err) {
+        // TODO: change to a modal
         alert("Issues with obtaining weather data!")
         console.log("ERROR with WEATHER data!", err);
     }
@@ -149,12 +152,13 @@ function checkHistoryButton(key) {
 // ------- FUNCTION TO PULL WEATHER DAY FOR CITY BUTTON ------
 async function recallHistoryCity(location, key) {
     try {
-        const historyGeoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
+        const historyGeoQueryUrl = `https:api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(historyGeoQueryUrl);
         const data = await res.json();
-        const newWeatherQueryUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
+        const newWeatherQueryUrl = `https:api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(newWeatherQueryUrl, location);
         } catch (err) {
+            // TODO: change to a modal
             alert("Please enter a valid location!");
             console.log("ERROR with GEO data:", err);
         }
