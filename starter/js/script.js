@@ -3,6 +3,7 @@ $(function () {
     const todayDt = dayjs().format('DD/M/YYYY');
     // const todayNewFormat = dayjs().format('YYYY-MM-DD');
     const todayDay = dayjs().format('DD');
+    
     // add click listener on button
     $("#search-button").click(function (event) {
         event.preventDefault();
@@ -16,7 +17,7 @@ $(function () {
             return txtVal.toUpperCase();
         });
         // add city to search history (buttons)
-        const lastCity = $('<button>').text(properCaseCityName).addClass('cityButton').attr('data-location', properCaseCityName);
+        const lastCity = $('<button>').text(properCaseCityName).addClass('btn btn-secondary m-1 cityButton').attr('data-location', properCaseCityName);
         $('#history').append(lastCity);
         // clear the input field
         $('#search-input').val('');
@@ -52,6 +53,7 @@ $(function () {
                         let todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
                         let todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
                         $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
+                        $('#today').css({border: '1px solid grey', padding: '10px'});
 
                         // ------ 4. Extract forecast data and create cards ------
                         try {
@@ -174,3 +176,17 @@ $(function () {
         // ------- END EVENT LISTENER --------
     })
 })
+
+
+// ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
+
+// adjust styling for the search input field
+$('#search-input').addClass('form-control rounded');
+// make the search input field fit the container
+$('#search-input').css({width: '100%'}); 
+// make the search button div fit the container
+$('.input-group-append').css({width: '100%'}); 
+// assign styling to the Search button
+$('#search-button').addClass('btn btn-primary mt-2').css('width','100%'); 
+// make the separator line fit the parent container
+$('#weather-hr').css({width: '50%', textAlign: 'left', marginLeft: '0'}); 
