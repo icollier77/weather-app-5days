@@ -1,18 +1,11 @@
 $(function () {
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
-    const todayDt = dayjs().format('DD/M/YYYY');
-    // const todayNewFormat = dayjs().format('YYYY-MM-DD');
-    const todayDay = dayjs().format('DD');
-    
     // add click listener on button
     $("#search-button").click(function (event) {
         event.preventDefault();
-        // clear previous data
-        clearPrevious();
-        // extract city from the input field
-        const cityName = getProperName($('#search-input'));
-        // make sure the search field is not empty
-        if (cityName == "") {
+        clearPrevious(); // clear previous data
+        const cityName = getProperName($('#search-input'));  // extract city from the input field
+        if (cityName == "") {       // make sure the search field is not empty
             alert("Please add a location!");
         } else {
         // run functions 
@@ -20,7 +13,6 @@ $(function () {
         checkWeatherForCity();
         }
 
-        
 
         // ------ Nested function to 1) get geo data; 2) get weather data and display
         async function getWeather() {
@@ -38,58 +30,10 @@ $(function () {
                 addCityBtn(cityName);
 
                 // 2. Fetch weather data
-
                 const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-                getWeatherData();
-                // ------ function to get weather data --------
-                async function getWeatherData() {
-                    try {
-                        const response = await fetch(weatherQueryUrl);
-                        const data = await response.json();
-                        // 3. Create new html elements and add content from fetched data
-                        let currentIconCode = data.list[0].weather[0].icon;
-                        let currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
-                        let currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
-                        let cityHeader = $('<h4>').text(`${cityName} (${todayDt})`)
-                        let todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
-                        let feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
-                        let todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
-                        let todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
-                        $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
-                        $('#today').css({border: '1px solid grey', padding: '10px'});
-
-                        // ------ 4. Extract forecast data and create cards ------
-                        // create an array of data objects for noon of each day
-                        const noonArray = data.list.filter(item => {
-                            return item.dt_txt.includes("12:00:00");
-                        });
-                        $.each(noonArray, (i) => {
-                            let fullDate = noonArray[i].dt_txt;   // extract timestamp for each item
-                            // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
-                            let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
-                            const dayOnly = dayObj.getDate();
-                            if (todayDay != dayOnly) {      // get all days after today
-                                var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
-                                // get the date only and rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
-                                let futureDate = arrayOfDate[0].replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
-                                // create new card with forecast weather and display
-                                let cardDate = $('<h5>').text(futureDate);
-                                let iconCode = noonArray[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
-                                let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                                let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
-                                let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
-                                let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
-                                let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
-                                let newCard = $('<div>').addClass('card');
-                                newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                                $('#forecast').append(newCard);
-                            }
-                        })
-                    } catch (err) {
-                        alert("Issues with obtaining weather data!")
-                        console.log("ERROR with WEATHER data!", err);
-                    }
-                }
+                // ------ function to get weather data (today and forecast) --------
+                getWeatherData(weatherQueryUrl, cityName);
+                
             } catch (err) {
                 alert("Please enter a valid location!");
                 console.log("ERROR with GEO data:", err);
@@ -179,7 +123,7 @@ function clearPrevious() {
     $('#forecast').empty();
 }
 
-// ------- FUNCTION TO CLEAN AND TRANSFORM CITY NAME ------
+// ------- FUNCTION TO CLEAN AND TRANSFORM CITY NAME --------
 function getProperName(input) {
     const properName = input.val().trim().toLowerCase().replace(/\b[a-z]/g, function (txtVal) {   // code from option 4 in https://www.smartherd.com/convert-text-cases-using-jquery-without-css/
         return txtVal.toUpperCase();
@@ -187,11 +131,63 @@ function getProperName(input) {
     return properName;
 }
 
-// ----- FUNCTION TO ADD CITY TO HISTORY
+// ----- FUNCTION TO ADD CITY TO HISTORY -------------------
 function addCityBtn(cityNm) {
     const lastCity = $('<button>').text(cityNm).addClass('btn btn-secondary mb-2 cityButton').attr('data-location', cityNm);
     $('#history').append(lastCity);
 }
+
+// ------- FUNCTION TO GET WEATHER DATA AND DISPLAY ----------
+async function getWeatherData(url, name) {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        // ---- Create new html elements and add today weather from fetched data ----
+        const currentIconCode = data.list[0].weather[0].icon;
+        const currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
+        const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
+        const todayDt = dayjs().format('DD/M/YYYY');
+        const cityHeader = $('<h4>').text(`${name} (${todayDt})`);
+        const todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
+        const feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
+        const todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
+        const todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
+        $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
+        $('#today').css({border: '1px solid grey', padding: '10px'});
+        // ------ Extract forecast data and create cards ------
+        // create an array of data objects for noon of each day
+        const noonArray = data.list.filter(item => {
+            return item.dt_txt.includes("12:00:00");
+        });
+        $.each(noonArray, (i) => {
+            let fullDate = noonArray[i].dt_txt;   // extract timestamp for each item
+            // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+            let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
+            const dayOnly = dayObj.getDate();
+            const todayDay = dayjs().format('DD');
+            if (todayDay != dayOnly) {      // get all days after today
+                var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
+                // get the date only and rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
+                let futureDate = arrayOfDate[0].replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
+                // create new card with forecast weather and display
+                let cardDate = $('<h5>').text(futureDate);
+                let iconCode = noonArray[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
+                let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
+                let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
+                let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
+                let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
+                let newCard = $('<div>').addClass('card');
+                newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
+                $('#forecast').append(newCard);
+            }
+        })
+    } catch (err) {
+        alert("Issues with obtaining weather data!")
+        console.log("ERROR with WEATHER data!", err);
+    }
+}
+
 
 
 // ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
