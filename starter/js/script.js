@@ -72,7 +72,7 @@ async function getWeatherData(url, name) {
         const todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
         const todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
         $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
-        $('#today').css({border: '1px solid grey', padding: '10px'});
+        $('#today').css({border: '1px solid #2D3E50', padding: '10px'});
         // ------ Extract forecast data and create cards ------
         // create an array of data objects for noon of each day
         const noonArray = data.list.filter(item => {
@@ -96,9 +96,11 @@ async function getWeatherData(url, name) {
                 let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
-                let newCard = $('<div>').addClass('card');
+                let newCard = $('<div>').addClass('card').css({padding: '10px', backgroundColor: '#2D3E50', color: '#FEFEFE'});
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                $('#forecast').append(newCard);
+                let cardCol = $('<div>').addClass('col');
+                cardCol.append(newCard);
+                $('#forecast').append(cardCol);
             }
         })
     } catch (err) {
@@ -134,6 +136,8 @@ async function recallHistoryCity(location, key) {
 }
 
 // ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
+// add gradient color for the header
+$('.weather-header').css({background: 'linear-gradient(to left, #200C4F, 70%, #3361BA)'});
 // adjust styling for the search input field
 $('#search-input').addClass('form-control rounded');
 // make the search input field fit the container
