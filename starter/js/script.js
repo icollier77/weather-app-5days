@@ -9,35 +9,8 @@ $(function () {
             alert("Please add a location!");
         } else {
         // run functions 
-        getWeather();
+        getWeather(cityName, apiKey);
         checkWeatherForCity();
-        }
-
-
-        // ------ Nested function to 1) get geo data; 2) get weather data and display
-        async function getWeather() {
-            // clear the input field
-            $('#search-input').val('');
-            try {
-                // 1. Fetch geo data
-                const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=${apiKey}`;
-                const res = await fetch(geoQueryUrl);
-                const data = await res.json();
-                const lat = data[0].lat;
-                const lon = data[0].lon;
-
-                // 2. Add city to search history (button)
-                addCityBtn(cityName);
-
-                // 2. Fetch weather data
-                const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-                // ------ function to get weather data (today and forecast) --------
-                getWeatherData(weatherQueryUrl, cityName);
-                
-            } catch (err) {
-                alert("Please enter a valid location!");
-                console.log("ERROR with GEO data:", err);
-            }
         }
 
         // ----- EVENT LISTENER ON BUTTONS WITH PREVIOUS SEARCHES -----
@@ -129,6 +102,30 @@ function getProperName(input) {
         return txtVal.toUpperCase();
     });
     return properName;
+}
+
+// ------ FUNCTION TO CHECK GEO DATA AND CASCADE FETCH REQUESTS FOR WEATHER DATA ------
+async function getWeather(location, key) {
+    // clear the input field
+    $('#search-input').val('');
+    try {
+        // 1. Fetch geo data
+        const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
+        const res = await fetch(geoQueryUrl);
+        const data = await res.json();
+        const lat = data[0].lat;
+        const lon = data[0].lon;
+        // 2. Add city to search history (button)
+        addCityBtn(location);
+        // 3. Fetch weather data
+        const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
+        // ------ function to get weather data (today and forecast) --------
+        getWeatherData(weatherQueryUrl, location);
+        
+    } catch (err) {
+        alert("Please enter a valid location!");
+        console.log("ERROR with GEO data:", err);
+    }
 }
 
 // ----- FUNCTION TO ADD CITY TO HISTORY -------------------
