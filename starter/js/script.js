@@ -59,36 +59,33 @@ $(function () {
                         $('#today').css({border: '1px solid grey', padding: '10px'});
 
                         // ------ 4. Extract forecast data and create cards ------
-                        try {
-                            const dateArr = data.list; // create array of forecast data from the fetch data for clarity
-                            $.each(dateArr, (i) => {   // loop through the array to identify weather data for noon of each day
-                                let fullDate = dateArr[i].dt_txt;   // extract timestamp for each item
-                                // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
-                                let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
-                                const dayOnly = dayObj.getDate();
-                                if (todayDay != dayOnly) {      // get all days after today
-                                    var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
-                                    if (arrayOfDate[1] === "12:00:00") {     // get weather data for midday of each day after today
-                                        let futureDate = arrayOfDate[0];    // get the date only
-                                        // rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
-                                        let futureDataFormatted = futureDate.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
-                                        // create new card with forecast weather and display
-                                        let cardDate = $('<h5>').text(futureDataFormatted);
-                                        let iconCode = dateArr[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
-                                        let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                                        let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
-                                        let cardTemp = $('<p>').text(`Temp: ${Math.round(dateArr[i].main.temp)}°C`);
-                                        let cardWind = $('<p>').text(`Wind: ${Math.round(dateArr[i].wind.speed)} m/s`);
-                                        let cardHumidity = $('<p>').text(`Humidity: ${dateArr[i].main.humidity}%`);
-                                        let newCard = $('<div>').addClass('card');
-                                        newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                                        $('#forecast').append(newCard);
-                                    }
+                       
+                        const dateArr = data.list; // create array of forecast data from the fetch data for clarity
+                        $.each(dateArr, (i) => {   // loop through the array to identify weather data for noon of each day
+                            let fullDate = dateArr[i].dt_txt;   // extract timestamp for each item
+                            // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+                            let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
+                            const dayOnly = dayObj.getDate();
+                            if (todayDay != dayOnly) {      // get all days after today
+                                var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
+                                if (arrayOfDate[1] === "12:00:00") {     // get weather data for midday of each day after today
+                                    let futureDate = arrayOfDate[0];    // get the date only
+                                    // rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
+                                    let futureDataFormatted = futureDate.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
+                                    // create new card with forecast weather and display
+                                    let cardDate = $('<h5>').text(futureDataFormatted);
+                                    let iconCode = dateArr[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
+                                    let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                                    let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
+                                    let cardTemp = $('<p>').text(`Temp: ${Math.round(dateArr[i].main.temp)}°C`);
+                                    let cardWind = $('<p>').text(`Wind: ${Math.round(dateArr[i].wind.speed)} m/s`);
+                                    let cardHumidity = $('<p>').text(`Humidity: ${dateArr[i].main.humidity}%`);
+                                    let newCard = $('<div>').addClass('card');
+                                    newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
+                                    $('#forecast').append(newCard);
                                 }
-                            })
-                        } catch (error) {
-                            console.log("Error:", error);
-                        }
+                            }
+                        })
                     } catch (err) {
                         alert("Issues with obtaining weather data!")
                         console.log("ERROR with WEATHER data!", err);
@@ -134,36 +131,33 @@ $(function () {
                                 $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
 
                                 // ------ 4. Extract forecast data and create cards ------
-                                try {
-                                    const dateArr = data.list; // create array of forecast data from the fetch data for clarity
-                                    $.each(dateArr, (i) => {   // loop through the array to identify weather data for noon of each day
-                                        let fullDate = dateArr[i].dt_txt;   // extract timestamp for each item
-                                        // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
-                                        let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
-                                        const dayOnly = dayObj.getDate();
-                                        if (todayDay != dayOnly) {      // get all days after today
-                                            var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
-                                            if (arrayOfDate[1] === "12:00:00") {     // get weather data for midday of each day after today
-                                                let futureDate = arrayOfDate[0];    // get the date only
-                                                // rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
-                                                let futureDataFormatted = futureDate.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
-                                                // create new card with forecast weather and display
-                                                let cardDate = $('<h5>').text(futureDataFormatted);
-                                                let iconCode = dateArr[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
-                                                let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                                                let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
-                                                let cardTemp = $('<p>').text(`Temp: ${Math.round(dateArr[i].main.temp)}°C`);
-                                                let cardWind = $('<p>').text(`Wind: ${Math.round(dateArr[i].wind.speed)} m/s`);
-                                                let cardHumidity = $('<p>').text(`Humidity: ${dateArr[i].main.humidity}%`);
-                                                let newCard = $('<div>').addClass('card');
-                                                newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                                                $('#forecast').append(newCard);
-                                            }
+                               
+                                const dateArr = data.list; // create array of forecast data from the fetch data for clarity
+                                $.each(dateArr, (i) => {   // loop through the array to identify weather data for noon of each day
+                                    let fullDate = dateArr[i].dt_txt;   // extract timestamp for each item
+                                    // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+                                    let dayObj = new Date(fullDate);    // create data object from the timestamp and extract day only
+                                    const dayOnly = dayObj.getDate();
+                                    if (todayDay != dayOnly) {      // get all days after today
+                                        var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
+                                        if (arrayOfDate[1] === "12:00:00") {     // get weather data for midday of each day after today
+                                            let futureDate = arrayOfDate[0];    // get the date only
+                                            // rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
+                                            let futureDataFormatted = futureDate.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
+                                            // create new card with forecast weather and display
+                                            let cardDate = $('<h5>').text(futureDataFormatted);
+                                            let iconCode = dateArr[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
+                                            let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                                            let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
+                                            let cardTemp = $('<p>').text(`Temp: ${Math.round(dateArr[i].main.temp)}°C`);
+                                            let cardWind = $('<p>').text(`Wind: ${Math.round(dateArr[i].wind.speed)} m/s`);
+                                            let cardHumidity = $('<p>').text(`Humidity: ${dateArr[i].main.humidity}%`);
+                                            let newCard = $('<div>').addClass('card');
+                                            newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
+                                            $('#forecast').append(newCard);
                                         }
-                                    })
-                                } catch (error) {
-                                    console.log("Error:", error);
-                                }
+                                    }
+                                })
                             } catch (err) {
                                 alert("Issues with obtaining weather data!")
                                 console.log("ERROR with WEATHER data!", err);
