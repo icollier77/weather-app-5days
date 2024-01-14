@@ -23,7 +23,7 @@ $(function () {
 
 // ----- FUNCTION TO GET CITIES FROM LOCAL STORAGE ------
 function getFromLocalStorage() {
-    const cityList = JSON.parse(localStorage.getItem('savedList'));
+    const cityList = JSON.parse(localStorage.getItem('savedCitiesList'));
     if (cityList) {
         $.each(cityList, (i) => {
             addCityBtn(cityList[i]);
@@ -75,9 +75,9 @@ function addCityBtn(location) {
 
 // ----- FUNCTION TO ADD TO LOCAL STORAGE --------
 function addToLocalStorage(location) {
-    const cityList = JSON.parse(localStorage.getItem('savedList')) || []; // extract items array from local storage or create it
+    const cityList = JSON.parse(localStorage.getItem('savedCitiesList')) || []; // extract items array from local storage or create it
     cityList.push(location); // add city to the array
-    localStorage.setItem('savedList', JSON.stringify(cityList)); // convert to json and add to local storage
+    localStorage.setItem('savedCitiesList', JSON.stringify(cityList)); // convert to json and add to local storage
 }
 // ------- FUNCTION TO GET WEATHER DATA AND DISPLAY ----------
 async function getWeatherData(url, location) {
