@@ -1,5 +1,10 @@
 $(function () {
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
+    // get cities from local storage
+    getFromLocalStorage();
+    // add event listener on history buttons
+    checkHistoryButton(apiKey);
+    });
     // when new city is searched for
     $("#search-button").click(function (event) {
         event.preventDefault();
@@ -7,14 +12,24 @@ $(function () {
         const cityName = getProperName($('#search-input'));  // extract city from the input field & format
         if (cityName == "") {       // make sure the search field is not empty
             alert("Please add a location!");
+            return;
         } else {
         // get weather
+        // !why is this required again? can't pass through
+        const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
         getWeather(cityName, apiKey);
-        // add event listener on history buttons
-        checkHistoryButton(apiKey);
-        }
-    })
+        };
 })
+
+// ----- FUNCTION TO GET CITIES FROM LOCAL STORAGE ------
+function getFromLocalStorage() {
+    const cityList = JSON.parse(localStorage.getItem('savedList'));
+    if (cityList) {
+        $.each(cityList, (i) => {
+            addCityBtn(cityList[i]);
+        })
+    }
+}
 
 // ------ FUNCTION TO CLEAR PREVIOUS DATA ---------
 function clearPrevious() {
@@ -47,7 +62,7 @@ async function getWeather(location, key) {
         const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(weatherQueryUrl, location);
     } catch (err) {
-        alert("Please enter a valid location!");
+        alert("Invalid location!");
         console.log("ERROR with GEO data:", err);
     }
 }
@@ -60,7 +75,7 @@ function addCityBtn(location) {
 
 // ----- FUNCTION TO ADD TO LOCAL STORAGE --------
 function addToLocalStorage(location) {
-    let cityList = JSON.parse(localStorage.getItem('savedList')) || []; // extract items array from local storage or create it
+    const cityList = JSON.parse(localStorage.getItem('savedList')) || []; // extract items array from local storage or create it
     cityList.push(location); // add city to the array
     localStorage.setItem('savedList', JSON.stringify(cityList)); // convert to json and add to local storage
 }
@@ -74,6 +89,7 @@ async function getWeatherData(url, location) {
         const currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
         const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
         const todayDt = dayjs().format('DD/M/YYYY');
+        // ! why can't add icon in the header?
         const cityHeader = $('<h4>').text(`${location} (${todayDt})`);
         const todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
         const feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
@@ -104,6 +120,7 @@ async function getWeatherData(url, location) {
                 let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
+                // ! how to make card responsive for mobile screen?
                 let newCard = $('<div>').addClass('card').css({padding: '10px', backgroundColor: '#2D3E50', color: '#FEFEFE'});
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
                 let cardCol = $('<div>').addClass('col');
