@@ -8,46 +8,49 @@ $(function () {
     $("#search-button").click(function (event) {
         event.preventDefault();
         // clear previous data
-        $('#today').empty();
-        $('#forecast').empty();
+        clearPrevious();
         // extract city from the input field
-        const cityName = $('#search-input').val().trim();
-        // make sure city name is in Proper Case
-        const properCaseCityName = cityName.toLowerCase().replace(/\b[a-z]/g, function (txtVal) {   // code from option 4 in https://www.smartherd.com/convert-text-cases-using-jquery-without-css/
-            return txtVal.toUpperCase();
-        });
-        // add city to search history (buttons)
-        const lastCity = $('<button>').text(properCaseCityName).addClass('btn btn-secondary m-1 cityButton').attr('data-location', properCaseCityName);
-        $('#history').append(lastCity);
-        // clear the input field
-        $('#search-input').val('');
+        const cityName = getProperName($('#search-input'));
+        // make sure the search field is not empty
+        if (cityName == "") {
+            alert("Please add a location!");
+        } else {
         // run functions 
         getWeather();
         checkWeatherForCity();
+        }
+
+        
 
         // ------ Nested function to 1) get geo data; 2) get weather data and display
         async function getWeather() {
+            // clear the input field
+            $('#search-input').val('');
             try {
                 // 1. Fetch geo data
                 const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=${apiKey}`;
                 const res = await fetch(geoQueryUrl);
                 const data = await res.json();
-                const country = data[0].country;
-                console.log(country);
+                const lat = data[0].lat;
+                const lon = data[0].lon;
+
+                // 2. Add city to search history (button)
+                addCityBtn(cityName);
+
                 // 2. Fetch weather data
-                const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${apiKey}&units=metric`;
+
+                const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
                 getWeatherData();
                 // ------ function to get weather data --------
                 async function getWeatherData() {
                     try {
                         const response = await fetch(weatherQueryUrl);
                         const data = await response.json();
-                        console.log(data);
                         // 3. Create new html elements and add content from fetched data
                         let currentIconCode = data.list[0].weather[0].icon;
                         let currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
                         let currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
-                        let cityHeader = $('<h4>').text(`${properCaseCityName} (${todayDt})`)
+                        let cityHeader = $('<h4>').text(`${cityName} (${todayDt})`)
                         let todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
                         let feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
                         let todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
@@ -176,6 +179,26 @@ $(function () {
         // ------- END EVENT LISTENER --------
     })
 })
+
+// ------ FUNCTION TO CLEAR PREVIOUS DATA ---------
+function clearPrevious() {
+    $('#today').empty();
+    $('#forecast').empty();
+}
+
+// ------- FUNCTION TO CLEAN AND TRANSFORM CITY NAME ------
+function getProperName(input) {
+    const properName = input.val().trim().toLowerCase().replace(/\b[a-z]/g, function (txtVal) {   // code from option 4 in https://www.smartherd.com/convert-text-cases-using-jquery-without-css/
+        return txtVal.toUpperCase();
+    });
+    return properName;
+}
+
+// ----- FUNCTION TO ADD CITY TO HISTORY
+function addCityBtn(cityNm) {
+    const lastCity = $('<button>').text(cityNm).addClass('btn btn-secondary mb-2 cityButton').attr('data-location', cityNm);
+    $('#history').append(lastCity);
+}
 
 
 // ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
