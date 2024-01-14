@@ -51,7 +51,7 @@ async function getWeather(location, key) {
     $('#search-input').val('');
     try {
         // Fetch geo data
-        const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
+        const geoQueryUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(geoQueryUrl);
         const data = await res.json();
         // Add city to search history (button)
@@ -149,7 +149,7 @@ function checkHistoryButton(key) {
 // ------- FUNCTION TO PULL WEATHER DAY FOR CITY BUTTON ------
 async function recallHistoryCity(location, key) {
     try {
-        const historyGeoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
+        const historyGeoQueryUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(historyGeoQueryUrl);
         const data = await res.json();
         const newWeatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
