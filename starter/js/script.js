@@ -1,33 +1,20 @@
 $(function () {
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
-    // add click listener on button
+    // when new city is searched for
     $("#search-button").click(function (event) {
         event.preventDefault();
         clearPrevious(); // clear previous data
-        const cityName = getProperName($('#search-input'));  // extract city from the input field
+        const cityName = getProperName($('#search-input'));  // extract city from the input field & format
         if (cityName == "") {       // make sure the search field is not empty
             alert("Please add a location!");
         } else {
-        // run functions 
+        // get weather
         getWeather(cityName, apiKey);
-        checkHistoryButton();
-        }
-
-        // ----- EVENT LISTENER ON BUTTONS WITH PREVIOUS SEARCHES -----
-        function checkHistoryButton() {
-            $(document).off('click', '#history .cityButton').on('click', '#history .cityButton', function (e) {
-                e.preventDefault();
-                // clear previous data
-                clearPrevious();
-                let locationName = $(this).data('location');
-                // fetch data and update screen
-                recallHistoryCity(locationName, apiKey);
-                
-            })
+        // add event listener on history buttons
+        checkHistoryButton(apiKey);
         }
     })
 })
-
 
 // ------ FUNCTION TO CLEAR PREVIOUS DATA ---------
 function clearPrevious() {
@@ -52,15 +39,11 @@ async function getWeather(location, key) {
         const geoQueryUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(geoQueryUrl);
         const data = await res.json();
-        const lat = data[0].lat;
-        const lon = data[0].lon;
         // 2. Add city to search history (button)
         addCityBtn(location);
         // 3. Fetch weather data
-        const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
-        // ------ function to get weather data (today and forecast) --------
+        const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(weatherQueryUrl, location);
-        
     } catch (err) {
         alert("Please enter a valid location!");
         console.log("ERROR with GEO data:", err);
@@ -68,8 +51,8 @@ async function getWeather(location, key) {
 }
 
 // ----- FUNCTION TO ADD CITY TO HISTORY -------------------
-function addCityBtn(cityNm) {
-    const lastCity = $('<button>').text(cityNm).addClass('btn btn-secondary mb-2 cityButton').attr('data-location', cityNm);
+function addCityBtn(location) {
+    const lastCity = $('<button>').text(location).addClass('btn btn-secondary mb-2 cityButton').attr('data-location', location);
     $('#history').append(lastCity);
 }
 
@@ -124,6 +107,18 @@ async function getWeatherData(url, name) {
     }
 }
 
+// ----- EVENT LISTENER ON CITY BUTTONS WITH PREVIOUS SEARCHES -----
+function checkHistoryButton(key) {
+    $(document).off('click', '#history .cityButton').on('click', '#history .cityButton', function (e) {
+        e.preventDefault();
+        // clear previous data
+        clearPrevious();
+        let locationName = $(this).data('location');
+        // fetch data and update screen
+        recallHistoryCity(locationName, key);
+    })
+}
+
 // ------- FUNCTION TO PULL WEATHER DAY FOR CITY BUTTON ------
 async function recallHistoryCity(location, key) {
     try {
@@ -138,10 +133,7 @@ async function recallHistoryCity(location, key) {
         }
 }
 
-
-
 // ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
-
 // adjust styling for the search input field
 $('#search-input').addClass('form-control rounded');
 // make the search input field fit the container
