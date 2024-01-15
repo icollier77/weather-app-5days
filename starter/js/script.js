@@ -33,8 +33,8 @@ function searchCityWeather(key) {
         if (cityName == "") {       // make sure the search field is not empty
             // make sure no border is added in the Today's Weather section
             $('#today').removeClass('today-weather');
-            // TODO: change to a modal
-            alert("Please add a location!");
+            // Show modal with alert if the search is empty
+            $('#addLocationAlert').modal('show');
         } else {
         // get weather
         getWeather(cityName, key);
@@ -73,19 +73,19 @@ async function getWeather(location, key) {
             const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
             getWeatherData(weatherQueryUrl, location);
         } else if (data.length == 0) {
-            // TODO: change to a modal
-            alert("Please enter a valid location!");
+            // Show alert if searching for invalid location
+            $('#validLocationAlert').modal('show');
         }
     } catch (err) {
-        // TODO: change to a modal
-        alert("Issues with API request, or invalid location!");
+        // Show alert if issues with API
+        $('#apiIssuesAlert').modal('show');
         console.log("ERROR with GEO data:", err);
     }
 }
 
 // ----- FUNCTION TO ADD CITY TO HISTORY -------------------
 function addCityBtn(location) {
-    const lastCity = $('<button>').text(location).addClass('btn btn-secondary mb-2 cityButton').attr('data-location', location);
+    const lastCity = $('<button>').text(location).addClass('btn btn-outline-primary mb-2 cityButton').attr('data-location', location);
     $('#history').append(lastCity);
 }
 
@@ -174,8 +174,8 @@ async function recallHistoryCity(location, key) {
         const newWeatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
         getWeatherData(newWeatherQueryUrl, location);
         } catch (err) {
-            // TODO: change to a modal
-            alert("Please enter a valid location!");
+            // Show alert if issues with API or invalid location
+            $('#apiIssuesAlert').modal('show');
             console.log("ERROR with GEO data:", err);
         }
 }
