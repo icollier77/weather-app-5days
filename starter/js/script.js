@@ -58,13 +58,16 @@ async function getWeather(location, key) {
         const geoQueryUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${key}`;
         const res = await fetch(geoQueryUrl);
         const data = await res.json();
-        // Add city to search history (button)
-        addCityBtn(location);
-        // Add to local storage
-        addToLocalStorage(location);
-        // Fetch weather data
-        const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
-        getWeatherData(weatherQueryUrl, location);
+        // make sure the search returns a valid result, then
+        if (data.length > 0) {
+            // Add city to search history (button)
+            addCityBtn(location);
+            // Add to local storage
+            addToLocalStorage(location);
+            // Fetch weather data
+            const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
+            getWeatherData(weatherQueryUrl, location);
+        }
     } catch (err) {
         // TODO: change to a modal
         alert("Issues with API request, or invalid location!");
