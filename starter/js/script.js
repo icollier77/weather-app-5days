@@ -33,7 +33,8 @@ function searchCityWeather(key) {
         if (cityName == "") {       // make sure the search field is not empty
             // TODO: change to a modal
             alert("Please add a location!");
-            return;
+            // make sure no border is added in the Today's Weather section
+            $('#today').css({border: none});
         } else {
         // get weather
         getWeather(cityName, key);
