@@ -1,3 +1,5 @@
+// TODO: make the cards responsive on mobile screens
+
 $(function () {
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
     // get cities from local storage
@@ -10,12 +12,10 @@ $(function () {
 
 // ----- FUNCTION TO GET CITIES FROM LOCAL STORAGE ------
 function getFromLocalStorage() {
-    const cityList = JSON.parse(localStorage.getItem('savedCitiesList'));
-    if (cityList) {
-        $.each(cityList, (i) => {
-            addCityBtn(cityList[i]);
-        })
-    }
+    cityList = JSON.parse(localStorage.getItem('savedCitiesList'));
+    $.each(cityList, (i) => {
+        addCityBtn(cityList[i])
+    })
 }
 
 // ------ FUNCTION TO CLEAR PREVIOUS DATA ---------
@@ -61,10 +61,14 @@ async function getWeather(location, key) {
         const data = await res.json();
         // make sure the search returns a valid result, then
         if (data.length > 0) {
-            // Add city to search history (button)
-            addCityBtn(location);
-            // Add to local storage
-            addToLocalStorage(location);
+            // check if the city has been searched for before. If it hasn't, add a button and add to the local storage
+            const searchHistory = JSON.parse(localStorage.getItem('savedCitiesList'));
+            if (!searchHistory.includes(location)) {
+                // Add city to search history (button)
+                addCityBtn(location);
+                // Add to local storage
+                addToLocalStorage(location);
+            }
             // Fetch weather data
             const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
             getWeatherData(weatherQueryUrl, location);
