@@ -67,6 +67,9 @@ async function getWeather(location, key) {
             // Fetch weather data
             const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
             getWeatherData(weatherQueryUrl, location);
+        } else if (data.length == 0) {
+            // TODO: change to a modal
+            alert("Please enter a valid location!");
         }
     } catch (err) {
         // TODO: change to a modal
