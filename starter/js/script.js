@@ -32,7 +32,7 @@ function searchCityWeather(key) {
         const cityName = getProperName($('#search-input'));  // extract city from the input field & format
         if (cityName == "") {       // make sure the search field is not empty
             // make sure no border is added in the Today's Weather section
-            $('#today').css('border', 'none');
+            $('#today').removeClass('today-weather');
             // TODO: change to a modal
             alert("Please add a location!");
         } else {
@@ -110,7 +110,7 @@ async function getWeatherData(url, location) {
         const todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
         const todayHumidity = $('<p>').text(`Humidity: ${data.list[0].main.humidity}%`);
         $('#today').append(cityHeader, currentIcon, todayTemp, feelsLike, todayWind, todayHumidity);  // add new elements with today's weather
-        $('#today').css({border: '1px solid #2D3E50', padding: '10px'});
+        $('#today').addClass('today-weather');
         // ------ Extract forecast data and create cards ------
         // create an array of data objects for noon of each day
         const noonArray = data.list.filter(item => {
@@ -135,7 +135,7 @@ async function getWeatherData(url, location) {
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
                 // ! how to make card responsive for mobile screen?
-                let newCard = $('<div>').addClass('card').css({padding: '10px', backgroundColor: '#2D3E50', color: '#FEFEFE'});
+                let newCard = $('<div>').addClass('card forecast-card');
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
                 let cardCol = $('<div>').addClass('col');
                 cardCol.append(newCard);
@@ -177,15 +177,7 @@ async function recallHistoryCity(location, key) {
 }
 
 // ---------- ASSIGN CSS STYLING TO HTML ELEMENTS -----------------
-// add gradient color for the header
-$('.weather-header').css({background: 'linear-gradient(to left, #200C4F, 70%, #3361BA)'});
 // adjust styling for the search input field
 $('#search-input').addClass('form-control rounded');
-// make the search input field fit the container
-$('#search-input').css({width: '100%'}); 
-// make the search button div fit the container
-$('.input-group-append').css({width: '100%'}); 
 // assign styling to the Search button
 $('#search-button').addClass('btn btn-primary mt-2').css('width','100%'); 
-// make the separator line fit the parent container
-$('#weather-hr').css({width: '50%', textAlign: 'left', marginLeft: '0'});

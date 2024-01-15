@@ -1,0 +1,26 @@
+.weather-header {
+    background: linear-gradient(to left, #200C4F 70%, #3361BA);
+}
+
+.today-weather {
+    border: 1px solid #2D3E50;
+    padding: 10px;
+}
+
+.forecast-card {
+    padding: 10px;
+    background-color: #2D3E50;
+    color: #FEFEFE;
+}
+
+#search-input {
+    width: 100%;
+}
+
+.input-group-append {
+    width: 100%;
+}
+
+#weather-hr {
+    width: 100%;
+}
