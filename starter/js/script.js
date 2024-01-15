@@ -67,12 +67,13 @@ async function getWeather(location, key) {
             addToLocalStorage(location);
             // Fetch weather data
             const weatherQueryUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data[0].lat}&lon=${data[0].lon}&appid=${key}&units=metric`;
-            getWeatherData(weatherQueryUrl, location, countryCode);
+            getWeatherData(weatherQueryUrl, location);
         } else if (data.length == 0) {
             // TODO: change to a modal
             alert("Please enter a valid location!");
         }
     } catch (err) {
+        // ! STILL ADDS INVALID CITY
         // TODO: change to a modal
         alert("Issues with API request, or invalid location!");
         console.log("ERROR with GEO data:", err);
