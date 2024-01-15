@@ -36,3 +36,7 @@ body {
 #weather-hr {
     width: 100%;
 }
+
+#forecast {
+    justify-content: center;
+}

@@ -137,12 +137,13 @@ async function getWeatherData(url, location) {
                 let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
-                // ! how to make card responsive for mobile screen?
                 let newCard = $('<div>').addClass('card forecast-card');
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                let cardCol = $('<div>').addClass('col');
-                cardCol.append(newCard);
-                $('#forecast').append(cardCol);
+                // ! how to make card responsive for mobile screen?
+                // let cardDiv = $('<div>').addClass('col col-sm-12 col-md-5 col-lg-2 mb-1');
+                let cardDiv = $('<div>').addClass('col mb-1');
+                cardDiv.append(newCard);
+                $('#forecast').append(cardDiv);
             }
         })
     } catch (err) {
