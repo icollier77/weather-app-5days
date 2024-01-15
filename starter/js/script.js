@@ -62,7 +62,7 @@ async function getWeather(location, key) {
         // make sure the search returns a valid result, then
         if (data.length > 0) {
             // check if the city has been searched for before. If it hasn't, add a button and add to the local storage
-            const searchHistory = JSON.parse(localStorage.getItem('savedCitiesList'));
+            const searchHistory = JSON.parse(localStorage.getItem('savedCitiesList')) || [];
             if (!searchHistory.includes(location)) {
                 // Add city to search history (button)
                 addCityBtn(location);
