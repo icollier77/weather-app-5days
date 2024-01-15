@@ -1,5 +1,17 @@
+body {
+    width: 100vw;
+    margin: 0;
+}
+
+:root {
+    --card-bk-color: #2D3E50;
+    --card-font-color: #FEFEFE;
+    --header-bk-dark-color: #200C4F;
+    --header-bk-light-color: #3361BA;
+
+}
 .weather-header {
-    background: linear-gradient(to left, #200C4F 70%, #3361BA);
+    background: linear-gradient(to left, var(--header-bk-dark-color) 70%, var(--header-bk-light-color));
 }
 
 .today-weather {
@@ -9,8 +21,8 @@
 
 .forecast-card {
     padding: 10px;
-    background-color: #2D3E50;
-    color: #FEFEFE;
+    background-color: var(--card-bk-color);
+    color: var(--card-font-color);
 }
 
 #search-input {

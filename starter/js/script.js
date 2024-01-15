@@ -73,7 +73,6 @@ async function getWeather(location, key) {
             alert("Please enter a valid location!");
         }
     } catch (err) {
-        // ! STILL ADDS INVALID CITY
         // TODO: change to a modal
         alert("Issues with API request, or invalid location!");
         console.log("ERROR with GEO data:", err);
