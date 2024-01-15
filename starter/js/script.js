@@ -4,23 +4,9 @@ $(function () {
     getFromLocalStorage();
     // add event listener on history buttons
     checkHistoryButton(apiKey);
-    });
     // when new city is searched for
-    $("#search-button").click(function (event) {
-        event.preventDefault();
-        clearPrevious(); // clear previous data
-        const cityName = getProperName($('#search-input'));  // extract city from the input field & format
-        if (cityName == "") {       // make sure the search field is not empty
-            // TODO: change to a modal
-            alert("Please add a location!");
-            return;
-        } else {
-        // get weather
-        // !why is this required again? can't pass through
-        const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
-        getWeather(cityName, apiKey);
-        };
-})
+    searchCityWeather(apiKey);
+});
 
 // ----- FUNCTION TO GET CITIES FROM LOCAL STORAGE ------
 function getFromLocalStorage() {
@@ -36,6 +22,22 @@ function getFromLocalStorage() {
 function clearPrevious() {
     $('#today').empty();
     $('#forecast').empty();
+}
+
+function searchCityWeather(key) {
+    $("#search-button").click(function (event) {
+        event.preventDefault();
+        clearPrevious(); // clear previous data
+        const cityName = getProperName($('#search-input'));  // extract city from the input field & format
+        if (cityName == "") {       // make sure the search field is not empty
+            // TODO: change to a modal
+            alert("Please add a location!");
+            return;
+        } else {
+        // get weather
+        getWeather(cityName, key);
+        };
+    })
 }
 
 // ------- FUNCTION TO CLEAN AND TRANSFORM CITY NAME --------
