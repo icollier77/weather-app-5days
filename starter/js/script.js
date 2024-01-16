@@ -1,5 +1,3 @@
-// TODO: make the cards responsive on mobile screens
-
 $(function () {
     const apiKey = 'cd37f59da5ea1678108b4a3eacf1b443';
     // get cities from local storage
@@ -101,13 +99,12 @@ async function getWeatherData(url, location) {
     try {
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data);
         // ---- Create new html elements and add today weather from fetched data ----
         const currentIconCode = data.list[0].weather[0].icon;
         const currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
-        const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
+        // const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
+        const currentIcon = $('<img>').attr("src", currentIconSource).addClass('weather-icon');
         const todayDt = dayjs().format('DD/M/YYYY');
-        // ! why can't add icon in the header?
         const cityHeader = $('<h3>').text(`${location} (${todayDt})`);
         const todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
         const feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
@@ -145,9 +142,8 @@ async function getWeatherData(url, location) {
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
                 let newCard = $('<div>').addClass('card forecast-card');
                 cardCount++;
-                console.log(cardCount);
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                let cardDiv = $('<div>').addClass('col col-sm-12 mb-1');
+                let cardDiv = $('<div>').addClass('col mb-1');
                 cardDiv.append(newCard);
                 $('#forecast').append(cardDiv);
             } 

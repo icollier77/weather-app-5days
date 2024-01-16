@@ -40,3 +40,8 @@ body {
 #forecast {
     justify-content: center;
 }
+
+.weather-icon {
+    width: 50px;
+    height: auto;
+}
