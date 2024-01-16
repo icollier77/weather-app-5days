@@ -11,7 +11,7 @@ body {
 
 }
 .weather-header {
-    background: linear-gradient(to left, var(--header-bk-dark-color) 70%, var(--header-bk-light-color));
+    background: linear-gradient(to left, var(--header-bk-dark-color) 60%, var(--header-bk-light-color));
 }
 
 .today-weather {

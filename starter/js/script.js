@@ -107,7 +107,7 @@ async function getWeatherData(url, location) {
         const currentIcon = $('<img>').attr({ src: currentIconSource, width: "50px", height: "auto" });
         const todayDt = dayjs().format('DD/M/YYYY');
         // ! why can't add icon in the header?
-        const cityHeader = $('<h4>').text(`${location} (${todayDt})`);
+        const cityHeader = $('<h3>').text(`${location} (${todayDt})`);
         const todayTemp = $('<p>').text(`Temperature: ${Math.round(data.list[0].main.temp)}°C`);
         const feelsLike = $('<p>').text(`Feels like: ${Math.round(data.list[0].main.feels_like)}°C`);
         const todayWind = $('<p>').text(`Wind: ${Math.round(data.list[0].wind.speed)} m/s`);
@@ -143,12 +143,19 @@ async function getWeatherData(url, location) {
                 // let cardDiv = $('<div>').addClass('col col-sm-12 col-md-5 col-lg-2 mb-1');
                 let cardDiv = $('<div>').addClass('col mb-1');
                 cardDiv.append(newCard);
-                $('#forecast').append(cardDiv);
+                // ! TODO: add section title for forecast
+                // const forecastHeader = $('<h3>').text("5-Day Forecast");
+                // const forecastDiv = $('<div #forecast-header>').addClass('row');
+                // forecastDiv.html(forecastHeader);
+                // console.log(forecastDiv);
+                // $('#today').append(forecastDiv);
+                // // TODO: fix the order
+                $('#today').append(cardDiv);
             }
         })
     } catch (err) {
-        // TODO: change to a modal
-        alert("Issues with obtaining weather data!")
+        // Show alert if issues with getting weather data
+        $('#weatherIssuesAlert').modal('show');
         console.log("ERROR with WEATHER data!", err);
     }
 }
