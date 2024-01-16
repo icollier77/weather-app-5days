@@ -121,9 +121,6 @@ async function getWeatherData(url, location) {
         const noonArray = data.list.filter(item => {
             return item.dt_txt.includes("12:00:00");
         });
-        console.log(noonArray);
-        console.log(noonArray.length);
-        // ! issue: if check the weather before noon, noon of that day is included in the 5-day API stream but will be ec
         const forecastHeader = $('<h3>').text("5-Day Forecast");
         const forecastDiv = $('<div #forecast-header>').addClass('row');
         forecastDiv.append(forecastHeader);
@@ -173,7 +170,7 @@ async function getWeatherData(url, location) {
             let lastDayHumidity = $('<p>').text(`Humidity: ${lastDay.main.humidity}%`);
             let lastDayCard = $('<div>').addClass('card forecast-card');
             lastDayCard.append(lastDayDate, lastDayCardIcon, lastDayTemp, lastDayWind, lastDayHumidity);
-            let lastDayDiv =  $('<div>').addClass('card forecast-card');
+            let lastDayDiv =  $('<div>').addClass('col mb-1');
             lastDayDiv.append(lastDayCard);
             $('#forecast').append(lastDayDiv);
         }
