@@ -117,7 +117,6 @@ async function getWeatherData(url, location) {
         const noonArray = data.list.filter(item => {
             return item.dt_txt.includes("12:00:00");
         });
-        console.log(noonArray);
         const forecastHeader = $('<h3>').text("5-Day Forecast:");
         const forecastDiv = $('<div #forecast-header>').addClass('row mb-1');
         forecastDiv.append(forecastHeader);
@@ -136,9 +135,7 @@ async function getWeatherData(url, location) {
                 // create new card with forecast weather and display
                 let cardDate = $('<h5>').text(futureDate);
                 let iconCode = noonArray[i].weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
-                console.log(iconCode);
                 let iconSource = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                console.log(iconSource);
                 let cardIcon = $('<img>').attr({ src: iconSource, width: "50px", height: "auto" });
                 let cardTemp = $('<p>').text(`Temp: ${Math.round(noonArray[i].main.temp)}°C`);
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
