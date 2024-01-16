@@ -4,11 +4,12 @@ body {
 }
 
 :root {
-    --card-bk-color: #2D3E50;
-    --card-font-color: #FEFEFE;
     --header-bk-dark-color: #200C4F;
     --header-bk-light-color: #3361BA;
-
+    --today-bk-color: #c4d4e5;
+    --card-bk-color: #5782b0;
+    --card-font-color: #FEFEFE;
+    
 }
 .weather-header {
     background: linear-gradient(to left, var(--header-bk-dark-color) 60%, var(--header-bk-light-color));
@@ -17,6 +18,7 @@ body {
 .today-weather {
     border: 1px solid #2D3E50;
     padding: 10px;
+    background-color: var(--today-bk-color);
 }
 
 .forecast-card {
