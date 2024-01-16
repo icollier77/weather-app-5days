@@ -1,4 +1,3 @@
-// ! move the forecast header out of the today's section
 // TODO: make the cards responsive on mobile screens
 
 $(function () {
@@ -121,10 +120,10 @@ async function getWeatherData(url, location) {
         const noonArray = data.list.filter(item => {
             return item.dt_txt.includes("12:00:00");
         });
-        const forecastHeader = $('<h3>').text("5-Day Forecast");
-        const forecastDiv = $('<div #forecast-header>').addClass('row');
+        const forecastHeader = $('<h3>').text("5-Day Forecast:");
+        const forecastDiv = $('<div #forecast-header>').addClass('row mb-1');
         forecastDiv.append(forecastHeader);
-        $('#today').append(forecastDiv);
+        $('#forecast').append(forecastDiv);
         let cardCount = 0;
         $.each(noonArray, (i) => {
             let fullDate = noonArray[i].dt_txt;   // extract timestamp for each item
@@ -148,9 +147,7 @@ async function getWeatherData(url, location) {
                 cardCount++;
                 console.log(cardCount);
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                // ! how to make card responsive for mobile screen? which one is correct? 
-                // let cardDiv = $('<div>').addClass('col col-sm-12 col-md-5 col-lg-2 mb-1');
-                let cardDiv = $('<div>').addClass('col mb-1');
+                let cardDiv = $('<div>').addClass('col col-sm-12 mb-1');
                 cardDiv.append(newCard);
                 $('#forecast').append(cardDiv);
             } 
