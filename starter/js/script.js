@@ -1,3 +1,4 @@
+// ! move the forecast header out of the today's section
 // TODO: make the cards responsive on mobile screens
 
 $(function () {
@@ -101,6 +102,7 @@ async function getWeatherData(url, location) {
     try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log(data);
         // ---- Create new html elements and add today weather from fetched data ----
         const currentIconCode = data.list[0].weather[0].icon;
         const currentIconSource = `https://openweathermap.org/img/wn/${currentIconCode}@2x.png`;
@@ -119,6 +121,14 @@ async function getWeatherData(url, location) {
         const noonArray = data.list.filter(item => {
             return item.dt_txt.includes("12:00:00");
         });
+        console.log(noonArray);
+        console.log(noonArray.length);
+        // ! issue: if check the weather before noon, noon of that day is included in the 5-day API stream but will be ec
+        const forecastHeader = $('<h3>').text("5-Day Forecast");
+        const forecastDiv = $('<div #forecast-header>').addClass('row');
+        forecastDiv.append(forecastHeader);
+        $('#today').append(forecastDiv);
+        let cardCount = 0;
         $.each(noonArray, (i) => {
             let fullDate = noonArray[i].dt_txt;   // extract timestamp for each item
             // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
@@ -138,21 +148,35 @@ async function getWeatherData(url, location) {
                 let cardWind = $('<p>').text(`Wind: ${Math.round(noonArray[i].wind.speed)} m/s`);
                 let cardHumidity = $('<p>').text(`Humidity: ${noonArray[i].main.humidity}%`);
                 let newCard = $('<div>').addClass('card forecast-card');
+                cardCount++;
+                console.log(cardCount);
                 newCard.append(cardDate, cardIcon, cardTemp, cardWind, cardHumidity);
-                // ! how to make card responsive for mobile screen?
+                // ! how to make card responsive for mobile screen? which one is correct? 
                 // let cardDiv = $('<div>').addClass('col col-sm-12 col-md-5 col-lg-2 mb-1');
                 let cardDiv = $('<div>').addClass('col mb-1');
                 cardDiv.append(newCard);
-                // ! TODO: add section title for forecast
-                // const forecastHeader = $('<h3>').text("5-Day Forecast");
-                // const forecastDiv = $('<div #forecast-header>').addClass('row');
-                // forecastDiv.html(forecastHeader);
-                // console.log(forecastDiv);
-                // $('#today').append(forecastDiv);
-                // // TODO: fix the order
-                $('#today').append(cardDiv);
-            }
+                $('#forecast').append(cardDiv);
+            } 
         })
+        if (cardCount < 5) {
+            let lastDay = data.list[39];
+            let fullDate = lastDay.dt_txt;   // extract timestamp for each item
+            var arrayOfDate = fullDate.split(" ");   // split the timestamp into date and time
+            // get the date only and rearrange date using code snippet 6 from https://stackoverflow.com/questions/45271493/rearrange-date-format-jquery-or-javascript
+            let futureDate = arrayOfDate[0].replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$3-$2-$1");
+            let lastDayDate = $('<h5>').text(futureDate);
+            let lastDayIconCode = lastDay.weather[0].icon.replace('n', 'd'); // replace 'n' with 'd' in the icon code in the API to obtain the day icon (issue on the API side)
+            let lastDayIconSource = `https://openweathermap.org/img/wn/${lastDayIconCode}@2x.png`;
+            let lastDayCardIcon = $('<img>').attr({ src: lastDayIconSource, width: "50px", height: "auto" });
+            let lastDayTemp = $('<p>').text(`Temp: ${Math.round(lastDay.main.temp)}°C`);
+            let lastDayWind = $('<p>').text(`Wind: ${Math.round(lastDay.wind.speed)} m/s`);
+            let lastDayHumidity = $('<p>').text(`Humidity: ${lastDay.main.humidity}%`);
+            let lastDayCard = $('<div>').addClass('card forecast-card');
+            lastDayCard.append(lastDayDate, lastDayCardIcon, lastDayTemp, lastDayWind, lastDayHumidity);
+            let lastDayDiv =  $('<div>').addClass('card forecast-card');
+            lastDayDiv.append(lastDayCard);
+            $('#forecast').append(lastDayDiv);
+        }
     } catch (err) {
         // Show alert if issues with getting weather data
         $('#weatherIssuesAlert').modal('show');
